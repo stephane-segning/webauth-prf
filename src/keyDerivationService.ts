@@ -2,9 +2,8 @@
 export interface EncryptionKey {
     key: CryptoKey;
 }
-
 export class KeyDerivationService {
-    async deriveKey(prfOutput: Uint8Array): Promise<EncryptionKey> {
+    async deriveKey(prfOutput: Uint8Array, salt: Uint8Array): Promise<CryptoKey> {
         try {
             // Import the raw PRF output as a base key for HKDF.
             const baseKey = await crypto.subtle.importKey(
@@ -20,10 +19,8 @@ export class KeyDerivationService {
                 {
                     name: "HKDF",
                     hash: "SHA-256",
-                    // Use a secure, application-specific salt (store/manage appropriately).
-                    salt: crypto.getRandomValues(new Uint8Array(16)),
-                    // Use context-specific info if needed.
-                    info: new Uint8Array([1, 2, 3, 4]),
+                    salt: salt, 
+                    info: new Uint8Array([1, 2, 3, 4]),  
                 },
                 baseKey,
                 { name: "AES-GCM", length: 256 },
@@ -31,7 +28,7 @@ export class KeyDerivationService {
                 ["encrypt", "decrypt"]
             );
 
-            return { key: derivedKey };
+            return derivedKey ;
         } catch (error) {
             throw new Error(`Key derivation error: ${(error as Error).message}`);
         }
