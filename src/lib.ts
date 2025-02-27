@@ -60,8 +60,8 @@ async function handleRegister(): Promise<void> {
         rp: { name: "Localhost, Inc", id: domainNameId },
         user: {
             id: crypto.getRandomValues(new Uint8Array(16)),
-            name: "user@example.com",
-            displayName: "User Example",
+            name: "",
+            displayName: "",
         },
         pubKeyCredParams: [
             { type: "public-key", alg: -7 }, // ES256
